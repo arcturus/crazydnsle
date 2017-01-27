@@ -1,0 +1,19 @@
+{
+  "name": "crazydnsle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Francisco Jordano <francisco@jordano.es>",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "express": "^4.14.0",
+    "internal-ip": "^1.2.0",
+    "iprange": "^0.1.0",
+    "request": "^2.79.0",
+    "sleep": "^5.1.0",
+    "subnet2cidr": "git://github.com/penguinpowernz/subnet2cidr.git"
+  }
+}
