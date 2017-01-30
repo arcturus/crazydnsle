@@ -1,3 +1,4 @@
 node_modules
 client/dehydrated/accounts
 client/dehydrated/certs
+client/dehydrated/domains.txt
