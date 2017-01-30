@@ -22,4 +22,7 @@ var range = iprange(ip);
 range.pop();
 range = range.slice(1);
 
-console.log(range);
+module.exports = {
+  localIp,
+  range
+};
