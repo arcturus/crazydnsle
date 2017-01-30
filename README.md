@@ -18,7 +18,7 @@ It uses the letsencrypt/acme client dehydrated implemented in bash to obtain the
 Execute
 ```javascript
 npm install
-node client/index.js
+node client/index.js alias <your_alias>
 ```
 and follow the instructions.
 
