@@ -14,7 +14,8 @@ program
   .description('Obtains certificates for the public name <local_ip>.<alias>.' + SERVER)
   .action(alias => {
     aliasValue = alias
-    const name = `${ips.localIp}.${alias}.${SERVER}`;
+    const localIp = ips.localIp.replace(/\./g,'-');
+    const name = `${localIp}.${alias}.${SERVER}`;
     console.log(`Obtaining certificates for name ${name}`);
 
     // Write dehydrated/domains.txt to ask for the certificate of ${name}

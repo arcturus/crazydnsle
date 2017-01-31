@@ -5,7 +5,7 @@ import re
 import os
 import ConfigParser
 
-DEBUG=1
+DEBUG=0
 
 def log(msg):
     sys.stderr.write('backend (%s): %s\n' % (os.getpid(), msg))
@@ -82,7 +82,7 @@ class DynamicBackend:
             cmd = get_next()
             if DEBUG: log(cmd)
 
-            if len(cmd) < 6:
+            if len(cmd) < 4:
                 log('did not understand: %s' % cmd)
                 write('FAIL')
                 continue
@@ -90,7 +90,6 @@ class DynamicBackend:
             qname = cmd[1].lower()
             qtype = cmd[3]
             qclass = cmd[2]
-            log('======================================> qclass %s qtype %s' % (qclass, qtype))
 
             if (qtype == 'A' or qtype == 'ANY') and qname.endswith(self.domain):
                 if qname == self.domain:
@@ -101,6 +100,8 @@ class DynamicBackend:
                     self.handle_subdomains(qname)
             elif qtype == 'SOA' and qname.endswith(self.domain):
                 self.handle_soa(qname)
+            elif qtype == 'NS':
+                self.handle_nameservers("ns1.saraoapp.com")
             else:
                 self.handle_unknown(qtype, qname)
 
@@ -113,19 +114,16 @@ class DynamicBackend:
         subdomain = qname[0:qname.find(self.domain)-1]
 
         subparts = subdomain.split('.')
-        if len(subparts) < 5:
-            if DEBUG: log('subparts less than 5')
+        if len(subparts) < 2:
+            if DEBUG: log('subparts less than 2')
             self.handle_self(qname)
             return
 
-        aliasIndex = 4
-        if len(subparts) > 5:
-            aliasIndex = len(subparts) - 1
-
-        alias = subparts[aliasIndex]
+        alias = subparts[-1]
 	log('alias is: %s' % alias)
-	ipaddress = subparts[-5:-1]
-        if DEBUG: log('ip: %s' % ipaddress)
+	ipaddress = subparts[-2]
+	ipaddress = ipaddress.replace("-", ".").split('.')
+        log('ip: %s' % ipaddress)
         for part in ipaddress:
             if re.match('^\d{1,3}$', part) is None:
                 if DEBUG: log('%s is not a number' % part)
@@ -161,7 +159,7 @@ class DynamicBackend:
         write('END')
 
     def handle_dns_challenge(self, alias, qname, ip, subdomain):
-        challengeFile = "%s.%s" % (ip, alias)
+        challengeFile = "%s.%s" % (ip.replace(".", "-"), alias)
         log('Checking dns changellenge for %s' % (challengeFile))
         fname = os.path.join('/tmp', challengeFile)
         if os.path.exists(fname) and qname.startswith('_acme-challenge'):

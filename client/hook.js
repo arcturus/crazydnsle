@@ -37,7 +37,7 @@ switch(command) {
     request(`http://moom.pw:4444/dnsupdate/${alias}/${ip}/${challenge}`, () => {
       // TODO check response ...
       console.log('Record updated waiting ...');
-      sleep.sleep(1);
+      sleep.sleep(5);
       process.exit(0);
     });
     break;
